@@ -115,6 +115,27 @@ export default function TagInput({ myId, roomId, sendToRoom }: any) {
       return;
     }
 
+      if (e.key === "Backspace") {
+        const cursor = inputRef.current?.selectionStart ?? 0;
+        if (cursor > 0) {
+          const before = value.slice(0, cursor);
+          const match = before.match(/(@\w+|#\w+)$/);
+          if (match) {
+            e.preventDefault();
+            const newStart = cursor - match[0].length;
+
+            setValue(value.slice(0, newStart) + value.slice(cursor));
+            setMentions(prev => prev.filter(m => m !== match[0]));
+
+            setTimeout(() => {
+              inputRef.current?.setSelectionRange(newStart, newStart);
+            }, 0);
+
+            return;
+          }
+        }
+      }
+
     if (!showList || list.length === 0) return;
 
     if (e.key === "ArrowDown") {
@@ -148,33 +169,34 @@ export default function TagInput({ myId, roomId, sendToRoom }: any) {
     }, 0);
   };
 
-  const highlighted = value.replace(/(@\w+|#\w+)/g, (m) =>
-    mentions.includes(m)
-      ? `<span style="background:#fde047;border-radius:4px;padding:2px;">${m}</span>`
-      : m
-  );
-
   return (
     <div className="relative w-full">
 
-      <div
-        className="absolute inset-0 px-3 py-2 text-black pointer-events-none whitespace-pre-wrap overflow-hidden"
-        dangerouslySetInnerHTML={{ __html: highlighted }}
-      />
+      <div className="absolute inset-0 p-3 pointer-events-none text-black leading-normal whitespace-pre-wrap">
+        {value.split(/(\s+)/).map((part, i) => {
+          const isTag = mentions.includes(part);
+          return isTag ? (
+            <span key={i} className="bg-yellow-300 rounded px-1">
+              {part}
+            </span>
+          ) : (
+            <span key={i}>{part}</span>
+          );
+        })}
+      </div>
 
-      <input
+
+      <div className="border-2 border-black">  <input
         ref={inputRef}
         value={value}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
-        className="border rounded-lg p-3 w-full bg-transparent relative z-10 text-black"
-        style={{ color: "transparent", caretColor: "black" }}
-        placeholder="Type a message..."
-      />
-
+        className="border rounded-lg p-3 w-full bg-transparent outline-none relative z-10 caret-black leading-normal"
+        style={{ color: "transparent", border: 2 }}
+      /></div>
       {showList && list.length > 0 && (
         <div className="absolute left-0 bottom-full mb-2 w-full bg-white border shadow rounded-md text-black z-50">
-          {list.map((label: string, i: number) => (
+          {list.map((label:string, i:number) => (
             <div
               key={label}
               onMouseDown={() => replaceWord(label)}
@@ -182,13 +204,14 @@ export default function TagInput({ myId, roomId, sendToRoom }: any) {
                 i === activeIndex ? "bg-gray-200" : "hover:bg-gray-100"
               }`}
             >
-              {triggerChar}
-              {label}
+              {triggerChar}{label}
             </div>
           ))}
         </div>
-      )}
-    </div>
+  )}
+
+</div>
+
   );
 }
 
