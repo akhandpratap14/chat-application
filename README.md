@@ -104,6 +104,8 @@ npm run dev
 
 
  ## 🚀 Tagging Engine Flow
+
+ ```
  
 
 User                      Frontend                   Backend
@@ -127,9 +129,12 @@ User                      Frontend                   Backend
  │────────────────────────► │ Replace '@akh' → '@Akhand'│
  │                          │ Render highlight layer     │
  │                          │                           │
-
+```
 
  ## 🚀 WebSocket Message Flow Diagram
+
+
+ ```
 
 
 User A                     Server                    User B
@@ -145,4 +150,4 @@ User A                     Server                    User B
   │                          │               └─────────►│ receive message
   │ message rendered         │                          │ message rendered
 
-
+```
