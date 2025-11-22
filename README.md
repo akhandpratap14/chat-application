@@ -1,126 +1,148 @@
-Real-Time Chat + Smart Tagging Input (@, # Autocomplete)
+# Real-Time Chat + Smart Tagging Input (@, # Autocomplete)
 
-Tech Stack → Next.js, Redux, Node.js, Socket.io
+### **Tech Stack → Next.js, Redux, Node.js, Socket.io**
 
-This project demonstrates a whatsapp-style chat interface with:
+This project demonstrates a WhatsApp-style chat interface with:
 
-✔ Real-time messages (via WebSocket)
-✔ Dynamic tagging (@, #)
-✔ Live autocomplete from backend
-✔ Highlighted mentions
-✔ Full message tokenization (text + tags)
-✔ Modular frontend + backend architecture
-🔧 Tech Stack & Architecture
-Frontend (Next.js)
+- ✔ Real-time messages (via WebSocket)
+- ✔ Dynamic tagging (@, #)
+- ✔ Live autocomplete from backend
+- ✔ Highlighted mentions
+- ✔ Full message tokenization (text + tags)
+- ✔ Modular frontend + backend architecture
 
-State Management: Redux Toolkit
+---
 
-Real-time: Socket.io-client
+## 🔧 Tech Stack & Architecture
 
-API Communication: REST API (fetch / axios)
+---
 
-Chat Input: A controlled <input> overlaid with a highlighted preview layer
+## **Frontend (Next.js)**
 
-Tagging engine:
+**State Management:** Redux Toolkit  
+**Real-time:** Socket.io-client  
+**API Communication:** REST API (fetch / axios)  
+**Chat Input:** A controlled input overlaid with a highlighted preview layer  
 
-Detects @ or #
+### **Tagging Engine Features**
 
-Sends keyword to backend
+- Detects `@` or `#`
+- Tracks cursor position
+- Extracts current word
+- Sends keyword to backend
+- Displays dropdown
+- Arrow key navigation + click select
+- Replaces typed word on selection
+- Highlights selected tags
 
-Displays dropdown
+---
 
-Replaces word on selection
+## **Backend (Node + Express)**
 
-Highlights selected tags
+- REST route: `GET /suggestions?q=keyword`
+- Real-time messaging via Socket.io
+- Database choices: Postgres / MySQL / MongoDB / Prisma
+- Modular API + Socket architecture
 
-Backend (Node + Express)
+---
 
-REST route: GET /suggestions?q=keyword
+## 🚀 How to Run Locally
 
-Real-time WS: Socket.io
+### **Backend Setup**
 
-DB: Postgres / MySQL / Mongo / Prisma 
-
-🚀 How to Run Locally
-
-Backend Setup
+```
 cd backend
 npm install
 npm run dev
+```
+### **Frontend Setup**
 
-
-Server runs at http://localhost:5050
-
-Frontend Setup
+```
 cd frontend
 npm install
 npm run dev
+```
+
+                         ┌──────────────────────────┐
+                         │        FRONTEND          │
+                         │       (Next.js)          │
+                         ├──────────────────────────┤
+                         │ Chat UI (React)          │
+                         │ ChatInput + Tag Engine   │
+                         │ Highlight Overlay Layer  │
+                         │ Redux Store              │
+                         │ Socket.io Client         │
+                         └─────────────┬────────────┘
+                                       │
+                       REST (axios/fetch)     WebSocket (Socket.io)
+                                       │
+                                       ▼
+      ┌──────────────────────────────────────────────────────────────┐
+      │                         BACKEND                               │
+      │                   Node.js + Express                           │
+      ├──────────────────────────────┬────────────────────────────────┤
+      │ REST API Layer               │ WebSocket Server (Socket.io)   │
+      │ `/suggestions?q=`           │ Broadcast Messages              │
+      │ Controllers                 │ Receive Messages                │
+      │ Services                    │ Emit Events                    │
+      └───────────────┬─────────────┴───────────────┬────────────────┘
+                      │                               │
+                      │                               │
+                      ▼                               ▼
+         ┌────────────────────┐            ┌──────────────────────────┐
+         │  Autocomplete      │            │ Real-Time Messaging      │
+         │ Suggestion Engine  │            │ Queue / Message Handler  │
+         └─────────┬──────────┘            └─────────────┬────────────┘
+                   │                                      │
+                   ▼                                      ▼
+       ┌────────────────────────┐             ┌─────────────────────────┐
+       │   DATABASE LAYER       │             │     DATABASE LAYER      │
+       │ Postgres / MySQL /     │             │ Chats Collection/Table  │
+       │ MongoDB (via Prisma)   │             │ Users / Sessions        │
+       │ suggestions table       │             │ Conversations           │
+       └────────────────────────┘             └─────────────────────────┘
 
 
-App runs at http://localhost:3000
+ ## 🚀 Tagging Engine Flow
+ 
 
-🧠 Tagging / Autocomplete Algorithm
-Step-by-step:
-1. User types into <input>
-
-We track cursor position
-
-Extract the current word:
-
-hello @akha| <-- cursor here
-currentWord = "@akha"
-
-2. Detect trigger characters
-if currentWord startsWith("@" or "#")
-   triggerChar = "@" or "#"
-   searchWord = currentWord.slice(1)
-
-3. Debounce search
-debounce(searchWord, 250 ms)
-
-4. Fetch suggestions
-GET /suggestions?q=akha
-→ ["Akhand", "Akshay", "Akhil"]
-
-5. Show dropdown
-
-Arrow keys navigate
-
-Enter selects
-
-Clicking selects
-
-6. Replace typed word
-
-Replace the exact substring between space boundaries:
-
-Before:  "hello @akh| there"
-Replace: "hello @Akhand  there"
-
-7. Highlight selected tags
-
-Value:
-
-hello @Akhand nice work
+User                      Frontend                   Backend
+ │                          │                           │
+ │ Type "@akha"             │                           │
+ │────────────────────────► │                           │
+ │                          │ Detect current word       │
+ │                          │ Trigger = '@'             │
+ │                          │ searchWord = 'akha'       │
+ │                          │ Debounce 250ms            │
+ │                          │───────────┬────────────── │
+ │                                      │               │
+ │                          │  GET /suggestions?q=akha  │
+ │                          │──────────────────────────► │
+ │                          │                           │ Query DB
+ │                          │                           │ Return ["Akhand", ...]
+ │                          │ ◄──────────────────────────│
+ │ Dropdown opens           │                           │
+ │────────────────────────► │                           │
+ │ Select "Akhand"          │                           │
+ │────────────────────────► │ Replace '@akh' → '@Akhand'│
+ │                          │ Render highlight layer     │
+ │                          │                           │
 
 
-Highlight layer:
-
-hello <span class="highlight">@Akhand</span> nice work
-
-8. Tokenize on send
-Input: "hello @Akhand #react"
-Tokens:
-
-[
-  { type: "text", value: "hello " },
-  { type: "tag", label: "Akhand", trigger: "@" },
-  { type: "text", value: " " },
-  { type: "tag", label: "react", trigger: "#" },
-]
+ ## 🚀 WebSocket Message Flow Diagram
 
 
-Used for:
-✔ rendering
-✔ saving in DB
-✔ sending via WebSocket
+User A                     Server                    User B
+  │                          │                          │
+  │  sendMessage("Hi")       │                          │
+  ├─────────────────────────►│                          │
+  │                          │ socket.on("message")     │
+  │                          │ Save to DB               │
+  │                          │ Broadcast to room        │
+  │                          │───────────────┬──────────│
+  │                          │               │          │
+  │             ◄────────────┤ emit("message", {...})   │
+  │                          │               └─────────►│ receive message
+  │ message rendered         │                          │ message rendered
+
+
