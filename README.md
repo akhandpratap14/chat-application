@@ -669,10 +669,6 @@ This project is licensed under the MIT License. See LICENSE file for details.
 ## 👤 Author
 
 **Akhand Pratap**  
-Full-Stack Software Engineer  
-- GitHub: [@akhandpratap](https://github.com/akhandpratap)
-- LinkedIn: [Akhand Pratap](https://linkedin.com/in/akhandpratap)
-- Portfolio: [akhandpratap.dev](https://akhandpratap.dev)
 
 ---
 
