@@ -38,48 +38,9 @@ This project demonstrates a production-ready WhatsApp-style chat interface with 
 | **Socket.io** | WebSocket server for real-time events |
 | **CORS** | Cross-origin resource sharing |
 | **Prisma/TypeORM** | Database ORM (suggested) |
-| **PostgreSQL/MongoDB** | Persistent data storage (suggested) |
+| **PostgreSQL | Persistent data storage |
 
 ---
-
-## 📂 Project Structure
-
-```
-project/
-├── frontend/
-│   ├── app/
-│   │   └── room/[id]/page.tsx          # Dynamic room route
-│   ├── components/
-│   │   ├── RoomChat.tsx                # Main chat container
-│   │   ├── TagInput.tsx                # Smart input with autocomplete
-│   │   ├── RoomMessageBubble.tsx       # Message renderer
-│   │   └── ChatInput.tsx               # Alternative simple input
-│   ├── hooks/
-│   │   ├── useRoomSocket.ts            # Socket.io connection hook
-│   │   ├── useRoomMessages.ts          # Fetch room history
-│   │   └── useSuggestionQuery.ts       # Autocomplete API hook
-│   ├── redux/
-│   │   ├── chatSlice.ts                # Redux state + actions
-│   │   ├── chatSelectors.ts            # Memoized selectors
-│   │   └── store.ts                    # Redux store config
-│   └── services/
-│       └── instance.ts                 # Axios/fetch wrapper
-│
-└── backend/
-    ├── routes/
-    │   ├── message.route.js            # POST /api/messages
-    │   ├── suggestions.route.js        # GET /api/suggestions
-    │   └── room.route.js               # Room management APIs
-    ├── controllers/
-    │   ├── messageController.js
-    │   ├── suggestionController.js
-    │   └── roomController.js
-    ├── models/
-    │   ├── Message.js
-    │   ├── Room.js
-    │   └── User.js
-    └── server.js                       # Express + Socket.io setup
-```
 
 ---
 
@@ -223,8 +184,6 @@ const shareRoom = () => {
 cd backend
 npm install
 
-# Create .env file
-cat > .env << EOF
 PORT=5050
 NODE_ENV=development
 DATABASE_URL=postgresql://user:pass@localhost:5432/chatdb
@@ -261,39 +220,14 @@ socket.on("room-message", (message) => {
 
 ```bash
 cd frontend
-npm install
-
-# Create .env.local
-cat > .env.local << EOF
-NEXT_PUBLIC_API_URL=http://localhost:5050/api
-NEXT_PUBLIC_SOCKET_URL=http://localhost:5050
-EOF
+bun install
+bun dev 
 
 # Run development server
 npm run dev
 
 # App starts on http://localhost:3000
 ```
-
-**Test the Application**
-
-1. **Open first browser tab:**  
-   Navigate to `http://localhost:3000/room/test-room-123`
-
-2. **Open second browser tab (incognito):**  
-   Navigate to same URL: `http://localhost:3000/room/test-room-123`
-
-3. **Test real-time messaging:**
-   - Type message in Tab 1 → Should appear in Tab 2 instantly
-   - Type message in Tab 2 → Should appear in Tab 1 instantly
-
-4. **Test tag autocomplete:**
-   - Type `@` followed by letters
-   - Wait 250ms for dropdown
-   - Navigate with arrow keys
-   - Press Enter to select
-
----
 
 ## 🎨 Architecture Diagrams
 
@@ -563,8 +497,6 @@ app.use(cors({
 
 ---
 
-## 🐛 Troubleshooting
-
 ### **Common Issues**
 
 **1. Socket Connection Failed**
@@ -610,61 +542,6 @@ Tags send correctly but don't highlight visually
 
 ---
 
-## 🎯 Future Roadmap
-
-### **Phase 1: Core Enhancements** (1-2 weeks)
-- [ ] User authentication (JWT)
-- [ ] User profiles with avatars
-- [ ] Message editing/deletion
-- [ ] Typing indicators
-- [ ] Read receipts
-
-### **Phase 2: Rich Features** (2-4 weeks)
-- [ ] File attachments (images, documents)
-- [ ] Emoji picker with autocomplete (`:smile:` → 😊)
-- [ ] GIF integration (Giphy API)
-- [ ] Voice messages
-- [ ] Video call integration (WebRTC)
-
-### **Phase 3: Advanced** (1-2 months)
-- [ ] End-to-end encryption
-- [ ] Message search with Elasticsearch
-- [ ] Tag analytics dashboard
-- [ ] Admin moderation tools
-- [ ] Multi-language support (i18n)
-
-### **Phase 4: Scale** (Ongoing)
-- [ ] Horizontal scaling with Redis adapter
-- [ ] CDN for static assets
-- [ ] Database read replicas
-- [ ] Monitoring with Datadog/Sentry
-- [ ] A/B testing framework
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these guidelines:
-
-1. **Fork the repository**
-2. **Create feature branch:** `git checkout -b feature/amazing-feature`
-3. **Commit changes:** `git commit -m 'Add amazing feature'`
-4. **Push to branch:** `git push origin feature/amazing-feature`
-5. **Open Pull Request**
-
-### **Code Style**
-- Use TypeScript for all new code
-- Follow ESLint rules
-- Write unit tests for new features
-- Update documentation
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License. See LICENSE file for details.
-
----
 
 ## 👤 Author
 
